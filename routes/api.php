@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NoteController;
+use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,29 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Public Routes
+
+
+// Route::post('/note',function () {
+//     return Note::create([
+//         'title' => 'That\'s pretty good',
+//         'content' => 'Something Somthing',
+//         'user_id' => 1
+//     ]);
+// });
+
+Route::post('/register',[AuthController::class,'register']);
+
+Route::post('/login',[AuthController::class,'login']);
+
+Route::get('/test',[AuthController::class,'test']);
+
+// Route::get('/note/search/{title}',[NoteController::class,'search']);
+
+// Protected Routes
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::resource('/note',NoteController::class);
+    Route::get('/note/search/{title}',[NoteController::class,'search']);
+    Route::post('/logout',[AuthController::class,'logout']);
 });
